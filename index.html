@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="es-CO">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <link rel="dns-prefetch" href="//www.roblox.com" />
+    <link rel="preconnect" href="https://www.roblox.com" crossorigin />
+    <link rel="icon" type="image/png" sizes="32x32" href="https://raw.githubusercontent.com/ZamasXmodder/esokhalloweenimage/main/ChatGPT%20Image%2024%20oct%202025%2C%2001_43_31%20p.m..png" />
+    <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/ZamasXmodder/esokhalloweenimage/main/ChatGPT%20Image%2024%20oct%202025%2C%2001_43_31%20p.m..png" />
+    <title>Halloween Script X modder</title>
+    <style>
+      :root{
+        --bg1:#0b0b0f; --bg2:#1a0e0c; --accent:#ff6a00; --accent2:#ffa500; --text:#f7f7f7; --muted:#aaaaaa;
+      }
+      html,body{height:100%;}
+      body{
+        margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
+        color:var(--text);
+        background: radial-gradient(120% 120% at 80% -10%, #2b0f00 0%, var(--bg1) 60%),
+                    radial-gradient(120% 120% at -10% 120%, #13051e 0%, var(--bg2) 60%);
+        display:grid; place-items:center;
+      }
+      main{
+        width:min(540px, 92vw);
+        border:1px solid #2b2b2b; border-radius:18px; padding:28px 22px; backdrop-filter: blur(6px);
+        background: linear-gradient(180deg, rgba(255,106,0,0.06), rgba(0,0,0,0.35));
+        box-shadow: 0 10px 40px rgba(0,0,0,.55), inset 0 0 0 1px rgba(255,255,255,0.05);
+      }
+      h1{margin:0 0 18px; font-size:clamp(22px, 3.8vw, 28px); letter-spacing:.4px;}
+      h1 .logo{width:28px;height:28px;vertical-align:middle;margin-right:8px;border-radius:6px;box-shadow:0 0 0 1px rgba(255,255,255,.08) inset;}
+      .keybox{
+        user-select:none; -webkit-user-select:none; -ms-user-select:none;
+        border:1px dashed rgba(255,165,0,.45); border-radius:14px; padding:14px 16px; margin:12px 0 18px;
+        background: rgba(0,0,0,.25);
+      }
+      #keyText{
+        user-select:none; -webkit-user-select:none; -ms-user-select:none;
+        font-weight:600; letter-spacing:.6px; font-size:clamp(14px, 3.6vw, 16px);
+        filter: drop-shadow(0 0 8px rgba(255,106,0,.25));
+      }
+      .actions{display:flex; gap:10px;}
+      button{
+        appearance:none; border:0; border-radius:12px; padding:12px 16px; font-weight:700;
+        background: linear-gradient(180deg, var(--accent), var(--accent2));
+        color:#1b120a; cursor:pointer; transition: transform .06s ease, box-shadow .2s ease, opacity .2s ease;
+        box-shadow: 0 6px 18px rgba(255,106,0,.35);
+      }
+      button:hover{ transform: translateY(-1px); }
+      button:active{ transform: translateY(0); }
+      button[disabled]{ opacity:.55; cursor:not-allowed; box-shadow:none; }
+      .sub{ background: linear-gradient(180deg, #2a2a2a, #1c1c1c); color:#eaeaea; box-shadow:none; }
+      /* BG video + overlay */
+      #bgVideo{position:fixed;inset:0;width:100vw;height:100vh;object-fit:cover;z-index:-2;pointer-events:none;filter:brightness(.45) saturate(1.1);} 
+      .overlay{position:fixed;inset:0;z-index:-1;pointer-events:none;background:
+        radial-gradient(100% 100% at 70% -10%, rgba(255,106,0,.15) 0%, rgba(0,0,0,0) 60%),
+        linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.65));}
+    </style>
+  </head>
+  <body>
+    <video id="bgVideo" autoplay muted loop playsinline src="https://raw.githubusercontent.com/ZamasXmodder/EsokHalloween/main/Personaje_Animado_con_Fondo_de_Halloween.mp4"></video>
+    <div class="overlay"></div>
+    <main>
+      <h1><img class="logo" src="https://raw.githubusercontent.com/ZamasXmodder/esokhalloweenimage/main/ChatGPT%20Image%2024%20oct%202025%2C%2001_43_31%20p.m..png" alt="Iconos" /> Halloween Script X modder</h1>
+
+      <!-- KEY (visible pero NO seleccionable / incopiable manualmente) -->
+      <div class="keybox" aria-live="polite" aria-atomic="true">
+        <span id="keyText" title="Key" draggable="false">— — —</span>
+      </div>
+
+      <div class="actions">
+        <button id="getKeyBtn" type="button">Get Key</button>
+        <button id="copyBtn" class="sub" type="button" disabled>Copy Key</button>
+      </div>
+    </main>
+
+    <script>
+      (() => {
+        'use strict';
+        const ROBLOX_URL = "https://www.roblox.com/share?code=c6d28f8cf8eee24083ac04e8601aea91&type=Server";
+
+        const keyText   = document.getElementById('keyText');
+        const getKeyBtn = document.getElementById('getKeyBtn');
+        const copyBtn   = document.getElementById('copyBtn');
+
+        let keyValue = '';
+
+        function makeKey(){
+          // Clave con pequeñas variantes aleatorias (visible pero no seleccionable manualmente)
+          const part = (n) => {
+            const u32 = new Uint32Array(1);
+            crypto.getRandomValues(u32);
+            return u32[0].toString(36).toUpperCase().slice(0,n);
+          };
+          const y = new Date().getFullYear().toString().slice(-2);
+          return `HX-${y}-${part(4)}-${part(4)}-${part(4)}`;
+        }
+
+        function openRobloxInNewTab(){
+          // Intenta abrir en nueva pestaña mediante gesto de usuario
+          let opened = false;
+          try {
+            const w = window.open('about:blank','_blank','noopener');
+            if (w) {
+              try { w.opener = null; w.location.href = ROBLOX_URL; opened = true; }
+              catch (err) { /* fallback abajo */ }
+            }
+          } catch (err) { /* fallback abajo */ }
+
+          if (!opened) {
+            // Fallback: simular click en <a target="_blank">
+            const a = document.createElement('a');
+            a.href = ROBLOX_URL;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            if ('referrerPolicy' in a) a.referrerPolicy = 'origin';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            opened = true;
+          }
+          return opened;
+        }
+
+        getKeyBtn.addEventListener('click', () => {
+          // Generar y mostrar la key (visible pero no seleccionable)
+          keyValue = makeKey();
+          keyText.textContent = keyValue;
+          copyBtn.disabled = false;
+        });
+
+        copyBtn.addEventListener('click', async () => {
+          if (!keyValue) return;
+
+          // 1) Abrir Roblox en nueva pestaña inmediatamente (gesto directo para evitar 400)
+          const openedNew = openRobloxInNewTab();
+
+          // 2) Copiar la key
+          try {
+            await navigator.clipboard.writeText(keyValue);
+          } catch (err) {
+            const ta = document.createElement('textarea');
+            ta.value = keyValue; document.body.appendChild(ta); ta.select();
+            try { document.execCommand('copy'); } catch (err2) { /* sin clipboard API */ } finally { ta.remove(); }
+          }
+
+          // Feedback visual
+          const prev = copyBtn.textContent;
+          copyBtn.textContent = '¡Copiado!';
+          setTimeout(() => (copyBtn.textContent = prev), 1100);
+
+          // 3) Último recurso: si el navegador bloqueó popups, abrir en la misma pestaña
+          if (!openedNew) {
+            try { window.location.href = ROBLOX_URL; } catch (err) {}
+          }
+        });
+
+        // Impedir copia manual de la key (pero permitir copia por botón)
+        ['copy','cut','contextmenu','selectstart','dragstart','mousedown','touchstart'].forEach((evt) => {
+          keyText.addEventListener(evt, (e) => {
+            e.preventDefault();
+            if (evt === 'mousedown' || evt === 'touchstart') return false;
+          }, { passive:false });
+        });
+
+        /* =====================
+           SELF-TESTS (console)
+           ===================== */
+        (function selfTests(){
+          try {
+            console.group('Halloween Script X modder — Tests');
+            // 1) makeKey format
+            const sample = makeKey();
+            console.assert(/^HX-\d{2}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/.test(sample), 'Key no cumple el formato');
+            // 2) elementos presentes
+            console.assert(!!getKeyBtn && !!copyBtn && !!keyText, 'Faltan elementos esenciales');
+            // 3) key inicialmente bloqueada para copiar manual
+            const css = getComputedStyle(keyText);
+            console.assert(css.userSelect === 'none' || css.userSelect === 'auto' && keyText.oncopy !== null, 'Key podría ser seleccionable');
+            // 4) función disponible
+            console.assert(typeof openRobloxInNewTab === 'function', 'openRobloxInNewTab no existe');
+            console.groupEnd();
+          } catch (err) {
+            console.error('Self-tests error:', err);
+          }
+        })();
+      })();
+    </script>
+  </body>
+</html>
